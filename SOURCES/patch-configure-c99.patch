@@ -1,0 +1,31 @@
+Avoid an implicit declaration of mkdir in the fchownat probe.  Fixed
+in gnulib upstream via:
+
+commit 3c136a2cc38d71083f123231a8b9ad4b01930789
+Author: Bruno Haible <bruno@clisp.org>
+Date:   Thu Jan 24 23:51:11 2019 +0100
+
+    fchownat: Fix compilation error on Android 4.3.
+    
+    * lib/unistd.in.h: Include <sys/stat.h> when module 'fchownat' is in
+    use.
+    * m4/fchownat.m4 (gl_FUNC_FCHOWNAT_DEREF_BUG,
+    gl_FUNC_FCHOWNAT_EMPTY_FILENAME_BUG): Include also <sys/stat.h>.
+    * doc/posix-functions/fchownat.texi: Mention the issue.
+
+The patched filed is not included in the upstream Git repository for
+patch, so presumably the next upstream release will sync the file from
+gnulib and get the fix this way.
+
+diff --git a/m4/fchownat.m4 b/m4/fchownat.m4
+index 54c670c7037246a4..b1a1287f80c297a0 100644
+--- a/m4/fchownat.m4
++++ b/m4/fchownat.m4
+@@ -86,6 +86,7 @@ AC_DEFUN([gl_FUNC_FCHOWNAT_EMPTY_FILENAME_BUG],
+        [AC_LANG_PROGRAM(
+           [[#include <unistd.h>
+             #include <fcntl.h>
++	    #include <sys/stat.h>
+           ]],
+           [[int fd;
+             int ret;
