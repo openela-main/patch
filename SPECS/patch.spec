@@ -3,7 +3,7 @@
 Summary: Utility for modifying/upgrading files
 Name: patch
 Version: 2.7.6
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: GPLv3+
 URL: http://www.gnu.org/software/patch/patch.html
 Group: Development/Tools
@@ -16,6 +16,9 @@ Patch5: patch-2.7.6-CVE-2018-20969.patch
 Patch6: patch-2.7.6-CVE-2019-13636-symlinks.patch
 Patch7: patch-2.7.x-abort_when_cleaning_up_fails.patch
 Patch100: patch-selinux.patch
+# CVE-2026-115207 - Prevent creation of out-of-tree files
+# http://cgit.git.savannah.gnu.org/cgit/patch.git/patch/?id=0cd45bb2132a42cd38d84b20661f3eae9b4da7ce
+Patch101: patch-2.7.6-CVE-2026-115207.patch
 BuildRequires: libselinux-devel
 BuildRequires: libattr-devel
 BuildRequires: ed
@@ -60,6 +63,9 @@ applications.
 # SELinux support.
 %patch100 -p1 -b .selinux
 
+# CVE-2026-115207, Prevent creation of out-of-tree files
+%patch101 -p1 -b .CVE-2026-115207
+
 %build
 CFLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE"
 %ifarch sparcv9
@@ -83,6 +89,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Sat Oct 24 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 2.7.6-12
+- CVE-2026-115207 patch: Filename validation bypass in reversal fallback allows file creation outside the working directory
+  allows file creation outside the working directory
+- Resolves: RHEL-289587
+
 * Tue Nov 19 2019 Than Ngo <than@redhat.com> - 2.7.6-11
 - Related: #1733565, apply the patch correctly
 
